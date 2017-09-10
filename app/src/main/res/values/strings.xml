@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">VodaFoodies</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="facebook_app_id">129813120967934</string>
+    <string name="fb_login_protocol_scheme">fb129813120967934</string>
+</resources>

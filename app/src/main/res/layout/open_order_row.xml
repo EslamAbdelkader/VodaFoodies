@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:id="@+id/openOrderImageView"
+        tools:src="@color/colorAccent"/>
+
+    <TextView
+        android:id="@+id/openOrderTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/openOrderImageView"
+        tools:text="Venue Name"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginTop="2dp"
+        android:layout_marginStart="10dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/openOrderTitle"
+        android:layout_toEndOf="@+id/openOrderImageView"
+        android:text="Ordered By:"
+        android:layout_alignStart="@id/openOrderTitle"
+        android:id="@+id/openOrderOrderedBy"/>
+
+    <ImageView
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        tools:src="@color/colorPrimaryDark"
+        android:id="@+id/openOrderOwnerImageView"
+        android:layout_toEndOf="@id/openOrderOrderedBy"
+        android:layout_marginStart="10dp"
+        android:layout_below="@id/openOrderTitle"/>
+
+    <TextView
+        android:id="@+id/openOrderOwner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Owner Name"
+        android:layout_toEndOf="@id/openOrderOwnerImageView"
+        android:layout_below="@id/openOrderTitle"
+        android:layout_marginStart="5dp"/>
+
+    <ImageView
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_marginEnd="5dp"
+        android:tint="#808080"
+        tools:src="@drawable/vf_right_arrow"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/openOrderTitle" />
+
+    <TextView
+        android:id="@+id/openOrderTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="1:00PM"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="30dp"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/openOrderOrderedBy"/>
+
+</RelativeLayout>

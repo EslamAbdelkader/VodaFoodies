@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen>
+    <tabs>
+        <tab
+            id="@+id/tab_open_orders"
+            title="Open Orders" />
+        <tab
+            id="@+id/tab_my_orders"
+            title="My Orders" />
+        <tab
+            id="@+id/tab_profile"
+            title="Profile" />
+    </tabs>
+</PreferenceScreen>

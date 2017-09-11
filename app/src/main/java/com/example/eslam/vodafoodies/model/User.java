@@ -8,18 +8,36 @@ public class User {
     String name;
     String email;
     String phone;
-    String imageUrl;
+    String img;
+    String fb_profile;
 
-    public User(String name, String email, String phone, String imageUrl) {
+    public User(String name, String email, String phone, String img, String fb_profile) {
 
         this.name = name;
         this.email = email;
         this.phone = phone;
-        this.imageUrl = imageUrl;
+        this.img = img;
+        this.fb_profile = fb_profile;
+    }
+
+    public User(String name, String email, String phone, String img) {
+
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+        this.img = img;
     }
 
     public User() {
 
+    }
+
+    public String getFb_profile() {
+        return fb_profile;
+    }
+
+    public void setFb_profile(String fb_profile) {
+        this.fb_profile = fb_profile;
     }
 
     public String getName() {
@@ -46,11 +64,11 @@ public class User {
         this.phone = phone;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getImg() {
+        return img;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setImg(String img) {
+        this.img = img;
     }
 }

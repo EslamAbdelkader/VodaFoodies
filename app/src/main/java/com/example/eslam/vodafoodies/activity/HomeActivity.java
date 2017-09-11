@@ -48,7 +48,6 @@ public class HomeActivity extends AppCompatActivity {
         viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
-                //Todo - put all cases, remove default
                 switch (position){
                     case 0:
                         return new OpenOrdersFragment();

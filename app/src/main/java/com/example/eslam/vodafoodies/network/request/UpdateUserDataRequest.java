@@ -1,5 +1,6 @@
 package com.example.eslam.vodafoodies.network.request;
 
+import com.example.eslam.vodafoodies.MyApplication;
 import com.example.eslam.vodafoodies.model.User;
 
 import java.util.Collections;
@@ -25,11 +26,11 @@ public class UpdateUserDataRequest extends BaseRequest {
     }
 
     public static class Builder {
-        private static final String UID_KEY = "uid";
         private UpdateUserDataRequest request = new UpdateUserDataRequest();
 
         public Builder setUser(User user) {
-            request.body = Collections.singletonMap(UID_KEY, user);
+            String userId = MyApplication.getUserId();
+            request.body = Collections.singletonMap(userId, user);
             return this;
         }
 

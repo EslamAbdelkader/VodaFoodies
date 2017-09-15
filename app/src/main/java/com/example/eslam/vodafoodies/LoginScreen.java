@@ -44,7 +44,7 @@ public class LoginScreen extends AppCompatActivity {
         setContentView(R.layout.activity_login_screen);
 
         mAuth = FirebaseAuth.getInstance();
-//        checkLoggedUser();
+        checkLoggedUser();
         callbackManager = CallbackManager.Factory.create();
         LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setReadPermissions("public_profile", "user_friends", "user_photos", "email", "user_birthday", "public_profile", "pages_messaging_phone_number");
@@ -102,6 +102,7 @@ public class LoginScreen extends AppCompatActivity {
                             FirebaseUser facebookUser = mAuth.getCurrentUser();
                             User user = createUser(facebookUser, object);
                             MyApplication.saveUser(user);
+                            updateUserData();
                             navigateToHomeActivity();
 //                            updateUI(facebookUser);
                         } else {
@@ -141,7 +142,7 @@ public class LoginScreen extends AppCompatActivity {
 
     private void navigateToHomeActivity() {
         startActivity(new Intent(LoginScreen.this, HomeActivity.class));
-        updateUserData();
+
         finish();
     }
 

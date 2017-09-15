@@ -17,6 +17,8 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,6 +29,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class LoginScreen extends AppCompatActivity {
 
@@ -39,9 +44,10 @@ public class LoginScreen extends AppCompatActivity {
         setContentView(R.layout.activity_login_screen);
 
         mAuth = FirebaseAuth.getInstance();
-        checkLoggedUser();
+//        checkLoggedUser();
         callbackManager = CallbackManager.Factory.create();
         LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
+        loginButton.setReadPermissions("public_profile", "user_friends", "user_photos", "email", "user_birthday", "public_profile", "pages_messaging_phone_number");
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -67,19 +73,37 @@ public class LoginScreen extends AppCompatActivity {
             navigateToHomeActivity();
     }
 
-    private void handleFacebookAccessToken(AccessToken accessToken) {
+    private void handleFacebookAccessToken(final AccessToken accessToken) {
+        GraphRequest request = GraphRequest.newMeRequest(
+                accessToken,
+                new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(JSONObject object, GraphResponse response) {
+                        Log.i("MyTag", response.toString());
+                        Log.i("MyTag", object.toString());
+                        signInToFirebase(accessToken, object);
+                    }
+                });
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "name,gender,email,link,picture.type(large)");
+        request.setParameters(parameters);
+        request.executeAsync();
+    }
+
+    private void signInToFirebase(AccessToken accessToken, final JSONObject object) {
         AuthCredential credential = FacebookAuthProvider.getCredential(accessToken.getToken());
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
+                            // Sign in success, update UI with the signed-in facebookUser's information
 //                            Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            MyApplication.saveUserId(user.getUid());
+                            FirebaseUser facebookUser = mAuth.getCurrentUser();
+                            User user = createUser(facebookUser, object);
+                            MyApplication.saveUser(user);
                             navigateToHomeActivity();
-//                            updateUI(user);
+//                            updateUI(facebookUser);
                         } else {
                             // If sign in fails, display a message to the user.
 //                            Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -98,15 +122,31 @@ public class LoginScreen extends AppCompatActivity {
         });
     }
 
+    private User createUser(FirebaseUser facebookUser, JSONObject object) {
+        try {
+            String uid = facebookUser.getUid();
+            String name = object.getString("name");
+            String gender = object.getString("gender");
+            String email = object.getString("email");
+            String url = object.getString("link");
+            String imageUrl = object.getJSONObject("picture").getJSONObject("data").getString("url");
+            User user = new User(uid, gender, name, email, "", imageUrl, url);
+            Log.i("MyTag", "user: " + user.toString());
+            return user;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private void navigateToHomeActivity() {
         startActivity(new Intent(LoginScreen.this, HomeActivity.class));
-        // TODO: 9/11/2017 Remove test
-        testUpdateUserRequest();
+        updateUserData();
         finish();
     }
 
-    private void testUpdateUserRequest() {
-        UpdateUserDataRequest request = new UpdateUserDataRequest.Builder().setUser(new User("Ess", "EssEmail", "EssPhone", "EssImage", "EssFbProfile")).build();
+    private void updateUserData() {
+        UpdateUserDataRequest request = new UpdateUserDataRequest.Builder().setUser(MyApplication.getUser()).build();
         NetworkManager.getInstance().updateUserData(request, new NetworkCallback() {
             @Override
             public void onSuccess(Object responseBody) {
@@ -116,7 +156,7 @@ public class LoginScreen extends AppCompatActivity {
 
             @Override
             public void onError(Throwable error) {
-                Log.i("MyTag",error.toString());
+                Log.i("MyTag", error.toString());
             }
         });
     }

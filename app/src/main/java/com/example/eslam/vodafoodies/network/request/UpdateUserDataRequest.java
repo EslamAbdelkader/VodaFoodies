@@ -29,7 +29,7 @@ public class UpdateUserDataRequest extends BaseRequest {
         private UpdateUserDataRequest request = new UpdateUserDataRequest();
 
         public Builder setUser(User user) {
-            String userId = MyApplication.getUserId();
+            String userId = MyApplication.getUser().getUid();
             request.body = Collections.singletonMap(userId, user);
             return this;
         }

@@ -5,22 +5,18 @@
     android:orientation="vertical"
     tools:context="com.example.eslam.vodafoodies.fragment.ProfileFragment">
 
-    <LinearLayout
+    <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal">
-
+        android:background="@color/colorPrimaryDark">
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="9"
-            android:gravity="center"
             android:text="Profile"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-    </LinearLayout>
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/toolbar_text_size"/>
+    </android.support.v7.widget.Toolbar>
 
     <RelativeLayout
         android:layout_width="match_parent"

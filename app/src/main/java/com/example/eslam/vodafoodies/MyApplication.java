@@ -4,8 +4,10 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.example.eslam.vodafoodies.model.User;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
+import com.google.gson.Gson;
 
 /**
  * Created by Eslam on 8/13/2017.
@@ -13,7 +15,7 @@ import com.facebook.appevents.AppEventsLogger;
 
 public class MyApplication extends Application {
     private static final String MY_PREFS_NAME = "myPrefsName";
-    private static final String USERU_ID = "userId";
+    private static final String USER = "user";
     private static Context context;
 
     @Override
@@ -25,14 +27,14 @@ public class MyApplication extends Application {
     }
 
 
-    public static void saveUserId(String userId) {
+    public static void saveUser(User user) {
         SharedPreferences.Editor edit = context.getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-        edit.putString(USERU_ID,userId).commit();
+        edit.putString(USER,new Gson().toJson(user)).commit();
     }
 
-    public static String  getUserId(){
+    public static User getUser(){
         SharedPreferences sharedPreferences = context.getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-        return sharedPreferences.getString(USERU_ID, null);
+        return new Gson().fromJson(sharedPreferences.getString(USER, null),User.class);
     }
 
 }

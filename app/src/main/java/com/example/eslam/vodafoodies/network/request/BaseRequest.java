@@ -13,7 +13,7 @@ public class BaseRequest {
     Map<String, String> headersMap;
 
     public BaseRequest() {
-        headersMap = Collections.singletonMap("uid", MyApplication.getUserId());
+        headersMap = Collections.singletonMap("uid", MyApplication.getUser().getUid());
     }
 
     public Map<String, String> getHeadersMap() {

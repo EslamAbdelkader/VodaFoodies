@@ -5,7 +5,7 @@ import com.example.eslam.vodafoodies.model.Item;
 import com.example.eslam.vodafoodies.model.User;
 import com.example.eslam.vodafoodies.model.Venue;
 import com.example.eslam.vodafoodies.network.request.UpdateUserDataRequest;
-import com.example.eslam.vodafoodies.network.response.UpdateUserDataResponse;
+import com.example.eslam.vodafoodies.network.response.GeneralResponse;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,15 +43,15 @@ public class NetworkManager {
     }
 
     public void updateUserData(UpdateUserDataRequest request, final NetworkCallback callback){
-        Call<UpdateUserDataResponse> updateUserDataResponseCall = apiService.updateUserData(request.getHeadersMap(), request.getBody());
-        updateUserDataResponseCall.enqueue(new Callback<UpdateUserDataResponse>() {
+        Call<GeneralResponse> updateUserDataResponseCall = apiService.updateUserData(request.getHeadersMap(), request.getBody());
+        updateUserDataResponseCall.enqueue(new Callback<GeneralResponse>() {
             @Override
-            public void onResponse(Call<UpdateUserDataResponse> call, Response<UpdateUserDataResponse> response) {
+            public void onResponse(Call<GeneralResponse> call, Response<GeneralResponse> response) {
                 callback.onSuccess(response.body());
             }
 
             @Override
-            public void onFailure(Call<UpdateUserDataResponse> call, Throwable t) {
+            public void onFailure(Call<GeneralResponse> call, Throwable t) {
                 callback.onError(t);
             }
         });
@@ -108,7 +108,7 @@ interface ApiInterface{
      * @return - response is simply status & result.
      */
     @POST("updateUserData")
-    Call<UpdateUserDataResponse> updateUserData(@HeaderMap Map<String,String> headers, @Body Map<String,User> user);
+    Call<GeneralResponse> updateUserData(@HeaderMap Map<String,String> headers, @Body Map<String,User> user);
 
     /**
      * gets list of venues

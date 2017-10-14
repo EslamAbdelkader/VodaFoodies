@@ -12,7 +12,7 @@ import com.example.eslam.vodafoodies.model.User;
 import com.example.eslam.vodafoodies.network.NetworkCallback;
 import com.example.eslam.vodafoodies.network.NetworkManager;
 import com.example.eslam.vodafoodies.network.request.UpdateUserDataRequest;
-import com.example.eslam.vodafoodies.network.response.UpdateUserDataResponse;
+import com.example.eslam.vodafoodies.network.response.GeneralResponse;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -151,8 +151,8 @@ public class LoginScreen extends AppCompatActivity {
         NetworkManager.getInstance().updateUserData(request, new NetworkCallback() {
             @Override
             public void onSuccess(Object responseBody) {
-                if (responseBody instanceof UpdateUserDataResponse)
-                    Log.i("MyTag", ((UpdateUserDataResponse) responseBody).toString());
+                if (responseBody instanceof GeneralResponse)
+                    Log.i("MyTag", ((GeneralResponse) responseBody).toString());
             }
 
             @Override

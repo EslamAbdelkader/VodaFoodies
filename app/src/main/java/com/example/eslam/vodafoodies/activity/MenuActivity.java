@@ -1,0 +1,60 @@
+package com.example.eslam.vodafoodies.activity;
+
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.widget.ExpandableListView;
+
+import com.example.eslam.vodafoodies.MyApplication;
+import com.example.eslam.vodafoodies.R;
+import com.example.eslam.vodafoodies.adapter.menu_adapter.MenuAdapter;
+import com.example.eslam.vodafoodies.model.Category;
+import com.example.eslam.vodafoodies.model.Item;
+import com.example.eslam.vodafoodies.network.NetworkCallback;
+import com.example.eslam.vodafoodies.network.NetworkManager;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class MenuActivity extends AppCompatActivity {
+
+    ExpandableListView expandableListView;
+    private MenuAdapter adapter;
+    private String venueId;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_menu);
+        initViews();
+        venueId = getIntent().getExtras().getString("venue_id");
+        NetworkManager.getInstance().getVenueMenu(venueId, new NetworkCallback() {
+            @Override
+            public void onSuccess(Object responseBody) {
+                Map<String,Category> responseMap = (Map<String, Category>) responseBody;
+                ArrayList<String> titles = new ArrayList<>(responseMap.keySet());
+                HashMap<String,List<Item>> itemsMap = new HashMap<>();
+                for (Category category : responseMap.values()) {
+                    itemsMap.put(category.getName(),new ArrayList<>(category.getItems().values()));
+                }
+                adapter.setTitles(titles);
+                adapter.setItemsMap(itemsMap);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onError(Throwable error) {
+                Log.i("MyTag",error.getMessage());
+            }
+        });
+
+    }
+
+    private void initViews() {
+        expandableListView = (ExpandableListView) findViewById(R.id.menu_expandable_list_view);
+        adapter = new MenuAdapter(MyApplication.getContext(), new ArrayList<String>(), new HashMap<String, List<Item>>());
+        expandableListView.setAdapter(adapter);
+    }
+}

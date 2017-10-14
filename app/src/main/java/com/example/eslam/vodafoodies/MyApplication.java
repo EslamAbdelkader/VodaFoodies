@@ -37,4 +37,7 @@ public class MyApplication extends Application {
         return new Gson().fromJson(sharedPreferences.getString(USER, null),User.class);
     }
 
+    public static Context getContext(){
+        return context;
+    }
 }

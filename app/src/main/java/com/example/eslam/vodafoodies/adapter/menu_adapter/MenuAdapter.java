@@ -1,31 +1,52 @@
 package com.example.eslam.vodafoodies.adapter.menu_adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.example.eslam.vodafoodies.R;
+import com.example.eslam.vodafoodies.activity.MenuActivity;
 import com.example.eslam.vodafoodies.model.Item;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Eslam on 10/14/2017.
  */
 
 public class MenuAdapter extends BaseExpandableListAdapter {
-    private Context context;
+    private MenuActivity activity;
     private List<String> titles;
     private Map<String, List<Item>> itemsMap;
 
-    public MenuAdapter(Context context, List<String> titles, Map<String, List<Item>> itemsMap) {
-        this.context = context;
+
+    public MenuAdapter(MenuActivity activity, List<String> titles, Map<String, List<Item>> itemsMap) {
+        this.activity = activity;
         this.titles = titles;
         this.itemsMap = itemsMap;
+        filter();
+    }
+
+    private void filter() {
+        for (List<Item> list : this.itemsMap.values()) {
+            Iterator<Item> itemIterator = list.iterator();
+            while (itemIterator.hasNext()) {
+                Item item = itemIterator.next();
+                if (item.getPrices() == null || item.getPrices().size() == 0) {
+                    itemIterator.remove();
+                }
+            }
+        }
     }
 
     @Override
@@ -66,7 +87,7 @@ public class MenuAdapter extends BaseExpandableListAdapter {
     @Override
     public View getGroupView(int i, boolean b, View view, ViewGroup viewGroup) {
         if (view == null) {
-            LayoutInflater inflater = (LayoutInflater) this.context
+            LayoutInflater inflater = (LayoutInflater) this.activity
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.category_row, null);
         }
@@ -78,13 +99,58 @@ public class MenuAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(int i, int i1, boolean b, View view, ViewGroup viewGroup) {
         if (view == null) {
-            LayoutInflater inflater = (LayoutInflater) this.context
+            LayoutInflater inflater = (LayoutInflater) this.activity
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.item_row, null);
         }
+        final Item item = itemsMap.get(titles.get(i)).get(i1);
         TextView itemTitle = view.findViewById(R.id.item_title);
-        itemTitle.setText(itemsMap.get(titles.get(i)).get(i1).getName());
+        CheckBox itemCheckBox = view.findViewById(R.id.item_check_box);
+        if (item.isSelected()) {
+            itemCheckBox.setChecked(true);
+        } else {
+            itemCheckBox.setChecked(false);
+        }
+        itemTitle.setText(item.getName());
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (item.isSelected()) {
+                    item.setSelected(false);
+                    activity.removeFromSelectedItemsMap(item.getId());
+                    notifyDataSetChanged();
+                } else {
+                    selectItem(item);
+                }
+            }
+        });
         return view;
+    }
+
+    private void selectItem(final Item item) {
+        Set<String> keySet = item.getPrices().keySet();
+        if (keySet.size() > 1) {
+            final ArrayList<String> dialogItems = new ArrayList<>();
+            for (String key : keySet) {
+                dialogItems.add(key + " - " + item.getPrices().get(key) + " EGP");
+            }
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setTitle(item.getName())
+                    .setItems(dialogItems.toArray(new CharSequence[dialogItems.size()]), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            String selectedSize = dialogItems.get(i).substring(0, dialogItems.get(i).indexOf(" - "));
+                            String itemId = item.getId();
+                            activity.addToSelectedItemsMap(itemId, selectedSize);
+                            item.setSelected(true);
+                            notifyDataSetChanged();
+                        }
+                    }).show();
+        } else {
+            activity.addToSelectedItemsMap(keySet.iterator().next(), String.valueOf(item.getPrices().values().iterator().next()));
+            item.setSelected(true);
+            notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -92,12 +158,12 @@ public class MenuAdapter extends BaseExpandableListAdapter {
         return true;
     }
 
-    public Context getContext() {
-        return context;
+    public MenuActivity getActivity() {
+        return activity;
     }
 
-    public void setContext(Context context) {
-        this.context = context;
+    public void setActivity(MenuActivity activity) {
+        this.activity = activity;
     }
 
     public List<String> getTitles() {
@@ -114,5 +180,6 @@ public class MenuAdapter extends BaseExpandableListAdapter {
 
     public void setItemsMap(Map<String, List<Item>> itemsMap) {
         this.itemsMap = itemsMap;
+        filter();
     }
 }
